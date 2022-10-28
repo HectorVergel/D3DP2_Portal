@@ -99,7 +99,7 @@ public class FPSPlayerController : MonoBehaviour
         m_Yaw = transform.rotation.y;
         m_Pitch = pitchController.localRotation.x;
         m_FOV = m_NormalSpeedFOV;
-        SetIdleWeaponAnimation();
+        //SetIdleWeaponAnimation();
         //GameController.GetGameController().SetPlayer(this);
         m_StartRotation = transform.rotation;
         m_StartPosition = transform.position;
