@@ -9,12 +9,14 @@ public class Portal : MonoBehaviour
     public Portal m_MirrorPortal;
     public FPSPlayerController m_Player;
     public float m_OffsetNearPlane;
-
+    
     public List<Transform> m_ValidPoints;
 
     public float m_MinValidDistance = 0.3f;
     public float m_MaxValidDistance = 1.2f;
     public float m_MinDotValidAngle = 0.995f;
+
+
     private void LateUpdate()
     {
 
@@ -49,6 +51,8 @@ public class Portal : MonoBehaviour
                 l_Valid = true;
                 Normal = l_RayCastHit.normal;
                 Position = l_RayCastHit.point;
+                transform.position = Position;
+                transform.rotation = Quaternion.LookRotation(Normal);
             }
 
             for (int i = 0; i < m_ValidPoints.Count; i++)
@@ -63,6 +67,7 @@ public class Portal : MonoBehaviour
                     if (l_RayCastHit.collider.tag == "DrawableWall")
                     {
                         float l_Distance = Vector3.Distance(Position, l_RayCastHit.point);
+                        Debug.Log("dist" + l_Distance);
                         float l_DotAngle = Vector3.Dot(Normal, l_RayCastHit.normal);
                         if (!(l_Distance >= m_MinValidDistance && l_Distance <= m_MaxValidDistance && l_DotAngle > m_MinDotValidAngle))
                             l_Valid = false;

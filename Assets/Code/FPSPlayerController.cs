@@ -79,6 +79,9 @@ public class FPSPlayerController : MonoBehaviour
     public float m_NotAimingFOV;
     bool m_Aiming;
 
+    public Portal m_BluePortal;
+    public Portal m_OrangePortal;
+
     [Header("Animations")]
     public Animation m_MyAnimation;
     public AnimationClip m_IdleAnimation;
@@ -103,8 +106,9 @@ public class FPSPlayerController : MonoBehaviour
         //GameController.GetGameController().SetPlayer(this);
         m_StartRotation = transform.rotation;
         m_StartPosition = transform.position;
-       
-       
+
+        m_BluePortal.gameObject.SetActive(false);
+        m_OrangePortal.gameObject.SetActive(false);
     }
 
 #if UNITY_EDITOR
@@ -204,37 +208,32 @@ public class FPSPlayerController : MonoBehaviour
 
         if (Input.GetMouseButton(0))
         {
-            //m_CurrentWeapon.Shoot();
-
+            Shoot(m_BluePortal);
         }
-
-
         if (Input.GetMouseButton(1))
         {
-            m_Aiming = true;
-            if (m_FOV > m_AimingFOV)
-            {
-                m_FOV -= m_IncreaseSpeedFOV * Time.deltaTime;
-            }
-            
+            Shoot(m_OrangePortal);
         }
-        else
-        {
-            m_Aiming = false;
-            if (m_FOV < m_NotAimingFOV)
-            {
-                m_FOV += m_IncreaseSpeedFOV * Time.deltaTime;
-            }
-           
-        }
-        m_Camera.fieldOfView = m_FOV;
+
+
+        
+        
 
    
 
 
     }
 
-   
+   void Shoot(Portal _Portal)
+   {
+        Vector3 l_Position;
+        Vector3 l_Normal;
+
+        if (_Portal.IsValidPosition(m_Camera.transform.position, m_Camera.transform.forward, m_MaxShootDistance, m_ShootingLayerMask, out l_Position, out l_Normal))
+            _Portal.gameObject.SetActive(true);
+        else
+            _Portal.gameObject.SetActive(false);
+   }
 
     void SetIdleWeaponAnimation()
     {
