@@ -124,6 +124,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!4 &133099513 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 614304636106123891, guid: f778e6da2c37f904dae04a4d7ff27e82,
+    type: 3}
+  m_PrefabInstance: {fileID: 4771178126513359344}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &169355249 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 169355249, guid: 87bad66f4f8f959439b0b87a21dae148,
@@ -136,6 +142,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 127036b1e72830d4ab96168cf71679a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &265262403 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8007825226937439026, guid: f778e6da2c37f904dae04a4d7ff27e82,
+    type: 3}
+  m_PrefabInstance: {fileID: 4771178126513359344}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &323106776
 GameObject:
   m_ObjectHideFlags: 0
@@ -231,6 +243,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!4 &362770347 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7450594676601512605, guid: f778e6da2c37f904dae04a4d7ff27e82,
+    type: 3}
+  m_PrefabInstance: {fileID: 4771178126513359344}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &562001945
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,6 +374,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &666019899 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6791517081771511359, guid: f778e6da2c37f904dae04a4d7ff27e82,
+    type: 3}
+  m_PrefabInstance: {fileID: 4771178126513359344}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -650,6 +674,12 @@ Transform:
   m_Father: {fileID: 768223557}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1350794890 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7140664497349560757, guid: f778e6da2c37f904dae04a4d7ff27e82,
+    type: 3}
+  m_PrefabInstance: {fileID: 4771178126513359344}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1555479757
 GameObject:
   m_ObjectHideFlags: 0
@@ -853,6 +883,12 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.9, z: 0}
+--- !u!4 &1601376031 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8159422119778145942, guid: f778e6da2c37f904dae04a4d7ff27e82,
+    type: 3}
+  m_PrefabInstance: {fileID: 4771178126513359344}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1611621147
 GameObject:
   m_ObjectHideFlags: 0
@@ -1138,5 +1174,40 @@ PrefabInstance:
       propertyPath: m_MirrorPortal
       value: 
       objectReference: {fileID: 169355249}
+    - target: {fileID: 4771178126814632146, guid: f778e6da2c37f904dae04a4d7ff27e82,
+        type: 3}
+      propertyPath: m_ValidPoints.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4771178126814632146, guid: f778e6da2c37f904dae04a4d7ff27e82,
+        type: 3}
+      propertyPath: m_ValidPoints.Array.data[0]
+      value: 
+      objectReference: {fileID: 265262403}
+    - target: {fileID: 4771178126814632146, guid: f778e6da2c37f904dae04a4d7ff27e82,
+        type: 3}
+      propertyPath: m_ValidPoints.Array.data[1]
+      value: 
+      objectReference: {fileID: 133099513}
+    - target: {fileID: 4771178126814632146, guid: f778e6da2c37f904dae04a4d7ff27e82,
+        type: 3}
+      propertyPath: m_ValidPoints.Array.data[2]
+      value: 
+      objectReference: {fileID: 666019899}
+    - target: {fileID: 4771178126814632146, guid: f778e6da2c37f904dae04a4d7ff27e82,
+        type: 3}
+      propertyPath: m_ValidPoints.Array.data[3]
+      value: 
+      objectReference: {fileID: 1350794890}
+    - target: {fileID: 4771178126814632146, guid: f778e6da2c37f904dae04a4d7ff27e82,
+        type: 3}
+      propertyPath: m_ValidPoints.Array.data[4]
+      value: 
+      objectReference: {fileID: 362770347}
+    - target: {fileID: 4771178126814632146, guid: f778e6da2c37f904dae04a4d7ff27e82,
+        type: 3}
+      propertyPath: m_ValidPoints.Array.data[5]
+      value: 
+      objectReference: {fileID: 1601376031}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f778e6da2c37f904dae04a4d7ff27e82, type: 3}
