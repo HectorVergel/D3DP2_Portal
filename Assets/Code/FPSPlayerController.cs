@@ -31,10 +31,12 @@ public class FPSPlayerController : MonoBehaviour
     Vector3 m_Direction = Vector3.zero;
     [Range(0, 90)] public float m_AngleToEnterPortalInDegrees;
 
+
+
     [Header("Attach")]
     public Transform m_AttachPosition;
     Rigidbody m_ObjectAttached;
-    bool m_AttachedObject;
+    bool m_AttachedObject = false;
     public float m_AttachingObjectSpeed = 80.0f;
     public float m_MaxDistanceAttachObject = 10.0f;
     public LayerMask m_AttachMask;
@@ -82,18 +84,19 @@ public class FPSPlayerController : MonoBehaviour
     public Transform m_FirePoint;
     public GameObject m_ShootCanonEffect;
     public static Action OnShoot;
+    bool m_ClickedButton = false;
+    bool m_DummyState = true;
 
     public KeyCode m_DebugLockAngleKeyCode = KeyCode.I;
     public KeyCode m_DebugLockKeyCode = KeyCode.O;
     bool m_AngleLocked = false;
     bool m_AimLocked = true;
 
-    public float m_AimingFOV;
-    public float m_NotAimingFOV;
-    bool m_Aiming;
 
     public Portal m_BluePortal;
     public Portal m_OrangePortal;
+
+    public DummyPortal m_DummyPortal;
 
     [Header("Animations")]
     public Animation m_MyAnimation;
@@ -101,10 +104,6 @@ public class FPSPlayerController : MonoBehaviour
     public AnimationClip m_ShootAnimation;
     public AnimationClip m_ReloadAnimation;
     public AnimationClip m_RunAnimation;
-
-    bool m_IsRunning = false;
-
-
 
     public bool m_HaveKey;
 
@@ -124,6 +123,7 @@ public class FPSPlayerController : MonoBehaviour
 
         m_BluePortal.gameObject.SetActive(false);
         m_OrangePortal.gameObject.SetActive(false);
+        m_DummyPortal.gameObject.SetActive(false);
     }
 
 #if UNITY_EDITOR
@@ -180,7 +180,7 @@ public class FPSPlayerController : MonoBehaviour
         if (Input.GetKey(m_RunKeyCode))
         {
             l_Speed = m_Speed * m_FastSpeedMultiplier;
-            m_IsRunning = true;
+
             if (m_FOV < m_FastSpeedFOV)
             {
                 m_FOV += m_IncreaseSpeedFOV * Time.deltaTime;
@@ -188,32 +188,14 @@ public class FPSPlayerController : MonoBehaviour
 
 
         }
-        else
-        {
-            m_IsRunning = false;
-            if (m_FOV > m_NormalSpeedFOV && !m_Aiming)
-            {
-                m_FOV -= m_IncreaseSpeedFOV * Time.deltaTime;
-            }
-        }
-
-
 
         CheckIfMoving(m_Direction);
-
-
-
-
 
         m_Direction.Normalize();
 
         PlayerRotation();
 
-        //Move
         m_mov = m_Direction * l_Speed * Time.deltaTime;
-
-
-
         SetGravity();
 
         CollisionFlags l_collisionFlags = m_CharacterController.Move(m_mov);
@@ -224,51 +206,44 @@ public class FPSPlayerController : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
-
                 ThrowAttachedObject(m_AttachedObjectThrowForce);
-
-
-
             }
             if (Input.GetMouseButtonDown(1))
             {
-
                 ThrowAttachedObject(0);
-
-
             }
         }
         else
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
             {
-
+                UpdateDummyPortal(m_DummyPortal); 
+                
+            }
+            if (Input.GetMouseButtonUp(0) && !m_AttachedObject)
+            {
+                m_ClickedButton = false;
                 Shoot(m_BluePortal);
-
-
-
             }
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonUp(1) && !m_AttachedObject)
             {
-
+                m_ClickedButton = false;
                 Shoot(m_OrangePortal);
-
-
             }
+
+           
+
         }
-        
 
         if (Input.GetKeyDown(m_AttachObjectKeyCode) && CanAttachObject())
         {
             AttachObject();
         }
 
-
         if (m_AttachedObject)
         {
             UpdateAttachObject();
         }
-
 
     }
 
@@ -295,31 +270,36 @@ public class FPSPlayerController : MonoBehaviour
     }
     void UpdateAttachObject()
     {
-        Vector3 l_EulerAngles = m_AttachPosition.rotation.eulerAngles;
-        Vector3 l_Direction = m_AttachPosition.transform.position - m_ObjectAttached.transform.position;
-        float l_Distance = l_Direction.magnitude;
-        float l_Movement = m_AttachingObjectSpeed * Time.deltaTime;
-        if (l_Movement >= l_Distance)
+        if(m_ObjectAttached != null)
         {
-            m_AttachedObject = true;
-            m_ObjectAttached.transform.SetParent(m_AttachPosition);
-            m_ObjectAttached.transform.localPosition = Vector3.zero;
-            m_ObjectAttached.transform.localRotation = Quaternion.identity;
+            Vector3 l_EulerAngles = m_AttachPosition.rotation.eulerAngles;
+            Vector3 l_Direction = m_AttachPosition.transform.position - m_ObjectAttached.transform.position;
+            float l_Distance = l_Direction.magnitude;
+            float l_Movement = m_AttachingObjectSpeed * Time.deltaTime;
+            if (l_Movement >= l_Distance)
+            {
+                m_AttachedObject = true;
+                m_ObjectAttached.transform.SetParent(m_AttachPosition);
+                m_ObjectAttached.transform.localPosition = Vector3.zero;
+                m_ObjectAttached.transform.localRotation = Quaternion.identity;
 
-        }
-        else
-        {
-            l_Direction /= l_Distance;
-            m_ObjectAttached.MovePosition(m_ObjectAttached.transform.position + l_Direction * l_Movement);
-            m_ObjectAttached.MoveRotation(Quaternion.Lerp(m_AttachingObjectStartRotation, Quaternion.Euler(0.0f, l_EulerAngles.y, l_EulerAngles.z), 1.0f - Mathf.Min(l_Distance / 1.5f, 1.0f)));
+            }
+            else
+            {
+                l_Direction /= l_Distance;
+                m_ObjectAttached.MovePosition(m_ObjectAttached.transform.position + l_Direction * l_Movement);
+                m_ObjectAttached.MoveRotation(Quaternion.Lerp(m_AttachingObjectStartRotation, Quaternion.Euler(0.0f, l_EulerAngles.y, l_EulerAngles.z), 1.0f - Mathf.Min(l_Distance / 1.5f, 1.0f)));
 
+            }
         }
+        
     }
 
     void ThrowAttachedObject(float _Force)
     {
         if (m_ObjectAttached != null)
         {
+            StartCoroutine(ResetAttach());
             m_ObjectAttached.transform.SetParent(null);
             m_ObjectAttached.isKinematic = false;
             m_ObjectAttached.AddForce(pitchController.forward * _Force);
@@ -327,8 +307,28 @@ public class FPSPlayerController : MonoBehaviour
             m_ObjectAttached = null;
         }
     }
+
+    void UpdateDummyPortal(DummyPortal _DummyPortal)
+    {
+        Vector3 l_Position;
+        Vector3 l_Normal;
+
+        if (_DummyPortal.IsValidPosition(m_Camera.transform.position, m_Camera.transform.forward, m_MaxShootDistance, m_ShootingLayerMask, out l_Position, out l_Normal))
+        {
+            m_DummyState = true;
+            
+        }
+        else
+        {
+            m_DummyState = false;
+           
+        }
+
+        m_DummyPortal.gameObject.SetActive(m_DummyState);
+    }
     void Shoot(Portal _Portal)
     {
+        m_DummyPortal.gameObject.SetActive(false);
         Vector3 l_Position;
         Vector3 l_Normal;
 
@@ -338,20 +338,15 @@ public class FPSPlayerController : MonoBehaviour
             _Portal.gameObject.SetActive(false);
     }
 
+    IEnumerator ResetAttach()
+    {
+        yield return new WaitForSeconds(0.1f);
+        m_AttachedObject = false;
+    }
+
     void SetIdleWeaponAnimation()
     {
         m_MyAnimation.CrossFade(m_IdleAnimation.name);
-    }
-
-
-    void SetRunAnimation()
-    {
-
-        m_MyAnimation.CrossFade(m_RunAnimation.name);
-        m_MyAnimation.CrossFadeQueued(m_IdleAnimation.name);
-
-
-
     }
 
 
