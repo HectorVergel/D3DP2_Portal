@@ -5,12 +5,11 @@ public class CompanionSpawner : MonoBehaviour
     public Companion m_CompanionPrefab;
     public Transform m_SpawnPosition;
 
-    private void OnTriggerEnter(Collider other)
+    public void SpawnCompanionCube()
     {
-        if(other.tag == "Player")
-        {
-            GameObject.Instantiate(m_CompanionPrefab, m_SpawnPosition.position, m_SpawnPosition.rotation);
-        }
+
+        GameObject.Instantiate(m_CompanionPrefab, m_SpawnPosition.position, m_SpawnPosition.rotation);
+
     }
 }
 

@@ -32,7 +32,6 @@ public class FPSPlayerController : MonoBehaviour
     [Range(0, 90)] public float m_AngleToEnterPortalInDegrees;
 
 
-
     [Header("Attach")]
     public Transform m_AttachPosition;
     Rigidbody m_ObjectAttached;
@@ -42,11 +41,10 @@ public class FPSPlayerController : MonoBehaviour
     public LayerMask m_AttachMask;
     Quaternion m_AttachingObjectStartRotation;
     public float m_AttachedObjectThrowForce = 20.0f;
-
-
-
     public CharacterController m_CharacterController;
     public float m_Speed;
+
+
     [Header("Inputs")]
     public KeyCode m_LeftKey;
     public KeyCode m_RightKey;
@@ -56,7 +54,6 @@ public class FPSPlayerController : MonoBehaviour
     public KeyCode m_RunKeyCode = KeyCode.LeftShift;
     public KeyCode m_JumpKey = KeyCode.Space;
     public KeyCode m_AttachObjectKeyCode = KeyCode.E;
-
 
     [Header(" ")]
     float m_VerticalSpeed = 0.0f;
@@ -97,7 +94,7 @@ public class FPSPlayerController : MonoBehaviour
     public Portal m_OrangePortal;
 
     public DummyPortal m_DummyPortal;
-
+    public float m_IncreasePortalSpeed = 10.0f;
     [Header("Animations")]
     public Animation m_MyAnimation;
     public AnimationClip m_IdleAnimation;
@@ -217,21 +214,31 @@ public class FPSPlayerController : MonoBehaviour
         {
             if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
             {
-                UpdateDummyPortal(m_DummyPortal); 
-                
+                UpdateDummyPortal(m_DummyPortal);
+
+            }
+            else
+            {
+                m_DummyState = false;
             }
             if (Input.GetMouseButtonUp(0) && !m_AttachedObject)
             {
                 m_ClickedButton = false;
+                m_DummyState = false;
+                
                 Shoot(m_BluePortal);
+                m_DummyPortal.transform.localScale = Vector3.one;
             }
             if (Input.GetMouseButtonUp(1) && !m_AttachedObject)
             {
                 m_ClickedButton = false;
+                m_DummyState = false;
+               
                 Shoot(m_OrangePortal);
+                m_DummyPortal.transform.localScale = Vector3.one;
             }
 
-           
+
 
         }
 
@@ -247,6 +254,52 @@ public class FPSPlayerController : MonoBehaviour
 
     }
 
+    void UpdateDummyPortal(DummyPortal _DummyPortal)
+    {
+        Vector3 l_Position;
+        Vector3 l_Normal;
+
+        Resizing();
+
+        if (_DummyPortal.IsValidPosition(m_Camera.transform.position, m_Camera.transform.forward, m_MaxShootDistance, m_ShootingLayerMask, out l_Position, out l_Normal))
+        {
+            m_DummyState = true;
+
+        }
+        else
+        {
+            m_DummyState = false;
+            _DummyPortal.IsValidPosition(m_Camera.transform.position, m_Camera.transform.forward, m_MaxShootDistance, m_ShootingLayerMask, out l_Position, out l_Normal);
+
+        }
+
+        m_DummyPortal.gameObject.SetActive(m_DummyState);
+    }
+
+    public float l_ScaleIncrease;
+
+    void Resizing()
+    {
+        
+        l_ScaleIncrease = 0.0f;
+        if (Input.mouseScrollDelta.y > 0 && m_DummyPortal.transform.localScale.x <= 2.0f && m_DummyPortal.transform.localScale.y <= 2.0f)
+        {
+
+            l_ScaleIncrease += Time.deltaTime * m_IncreasePortalSpeed;
+            m_DummyPortal.transform.localScale = new Vector3(m_DummyPortal.transform.localScale.x + l_ScaleIncrease, m_DummyPortal.transform.localScale.y + l_ScaleIncrease, m_DummyPortal.transform.localScale.z + l_ScaleIncrease);
+           
+        }
+
+        if (Input.mouseScrollDelta.y < 0 && m_DummyPortal.transform.localScale.x >= 0.5f && m_DummyPortal.transform.localScale.y >= 0.5f)
+        {
+            l_ScaleIncrease -= Time.deltaTime * m_IncreasePortalSpeed;
+            m_DummyPortal.transform.localScale = new Vector3(m_DummyPortal.transform.localScale.x + l_ScaleIncrease, m_DummyPortal.transform.localScale.y + l_ScaleIncrease, m_DummyPortal.transform.localScale.z + l_ScaleIncrease);
+            
+        }  
+
+    }
+
+   
     bool CanAttachObject()
     {
         return m_ObjectAttached == null;
@@ -270,7 +323,7 @@ public class FPSPlayerController : MonoBehaviour
     }
     void UpdateAttachObject()
     {
-        if(m_ObjectAttached != null)
+        if (m_ObjectAttached != null)
         {
             Vector3 l_EulerAngles = m_AttachPosition.rotation.eulerAngles;
             Vector3 l_Direction = m_AttachPosition.transform.position - m_ObjectAttached.transform.position;
@@ -292,7 +345,7 @@ public class FPSPlayerController : MonoBehaviour
 
             }
         }
-        
+
     }
 
     void ThrowAttachedObject(float _Force)
@@ -308,30 +361,12 @@ public class FPSPlayerController : MonoBehaviour
         }
     }
 
-    void UpdateDummyPortal(DummyPortal _DummyPortal)
-    {
-        Vector3 l_Position;
-        Vector3 l_Normal;
-
-        if (_DummyPortal.IsValidPosition(m_Camera.transform.position, m_Camera.transform.forward, m_MaxShootDistance, m_ShootingLayerMask, out l_Position, out l_Normal))
-        {
-            m_DummyState = true;
-            
-        }
-        else
-        {
-            m_DummyState = false;
-           
-        }
-
-        m_DummyPortal.gameObject.SetActive(m_DummyState);
-    }
     void Shoot(Portal _Portal)
     {
         m_DummyPortal.gameObject.SetActive(false);
         Vector3 l_Position;
         Vector3 l_Normal;
-
+        _Portal.transform.localScale = m_DummyPortal.transform.localScale;
         if (_Portal.IsValidPosition(m_Camera.transform.position, m_Camera.transform.forward, m_MaxShootDistance, m_ShootingLayerMask, out l_Position, out l_Normal))
             _Portal.gameObject.SetActive(true);
         else
@@ -340,7 +375,7 @@ public class FPSPlayerController : MonoBehaviour
 
     IEnumerator ResetAttach()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.5f);
         m_AttachedObject = false;
     }
 

@@ -9,6 +9,7 @@ public class Portal : MonoBehaviour
     public Camera m_Camera;
     public Transform m_OtherPortalTransform;
     public Portal m_MirrorPortal;
+    public LineRenderer m_Laser;
     public FPSPlayerController m_Player;
     public float m_OffsetNearPlane;
 
@@ -18,7 +19,10 @@ public class Portal : MonoBehaviour
     public float m_MaxValidDistance = 1.2f;
     public float m_MinDotValidAngle = 0.995f;
 
-
+    private void Start()
+    {
+        m_Laser.gameObject.SetActive(false);
+    }
     public bool IsValidPosition(Vector3 StartPosition, Vector3 forward, float MaxDistance, LayerMask PortalLayerMask, out Vector3 Position, out Vector3 Normal)
     {
 
@@ -33,7 +37,7 @@ public class Portal : MonoBehaviour
         {
             if (l_RayCastHit.collider.tag == "DrawableWall")
             {
-                Debug.Log("1");
+                
                 l_Valid = true;
                 Normal = l_RayCastHit.normal;
                 Position = l_RayCastHit.point;
@@ -50,16 +54,16 @@ public class Portal : MonoBehaviour
 
                 if (Physics.Raycast(l_Ray, out l_RayCastHit, MaxDistance, PortalLayerMask.value))
                 {
-                    Debug.Log("2");
+                    
                     if (l_RayCastHit.collider.tag == "DrawableWall")
                     {
-                        Debug.Log("3");
+                        
                         float l_Distance = Vector3.Distance(Position, l_RayCastHit.point);
 
                         float l_DotAngle = Vector3.Dot(Normal, l_RayCastHit.normal);
                         if (!(l_Distance >= m_MinValidDistance && l_Distance <= m_MaxValidDistance && l_DotAngle > m_MinDotValidAngle))
                         {
-                            Debug.Log("4");
+                            
                             l_Valid = false;
                         }
                     }
@@ -91,6 +95,23 @@ public class Portal : MonoBehaviour
 
     }
 
+    public void ShowLaser(Vector3 _Normal,Vector3 _LaserWorldPosition, Vector3 _LaserWorldDirection, bool _State, float _Distance)
+    {
+        m_MirrorPortal.m_Laser.gameObject.SetActive(_State);
+        Vector3 l_LocalPosition = m_OtherPortalTransform.InverseTransformPoint(_LaserWorldPosition);
+        m_MirrorPortal.m_Laser.transform.position = m_MirrorPortal.transform.TransformPoint(l_LocalPosition);
+
+        Vector3 l_LocalDirection = m_OtherPortalTransform.InverseTransformDirection(_LaserWorldDirection);
+        m_MirrorPortal.m_Laser.transform.forward = m_MirrorPortal.transform.TransformDirection(l_LocalDirection);
+
+        m_MirrorPortal.m_Laser.SetPosition(1, new Vector3(0.0f, 0.0f, _Distance));
+
+        Plane l_Plane = new Plane(_Normal, _LaserWorldPosition);
+        Ray l_Ray = new Ray(_LaserWorldPosition, _LaserWorldDirection);
+        float l_Distance;
+        l_Plane.Raycast(l_Ray, out l_Distance);
+        
+    }
 
    
 }

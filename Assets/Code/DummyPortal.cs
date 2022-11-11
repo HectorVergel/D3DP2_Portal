@@ -25,7 +25,7 @@ public class DummyPortal : MonoBehaviour
         {
             if (l_RayCastHit.collider.tag == "DrawableWall")
             {
-                Debug.Log("1");
+               
                 l_Valid = true;
                 Normal = l_RayCastHit.normal;
                 Position = l_RayCastHit.point;
@@ -42,16 +42,16 @@ public class DummyPortal : MonoBehaviour
 
                 if (Physics.Raycast(l_Ray, out l_RayCastHit, MaxDistance, PortalLayerMask.value))
                 {
-                    Debug.Log("2");
+                    
                     if (l_RayCastHit.collider.tag == "DrawableWall")
                     {
-                        Debug.Log("3");
+                        
                         float l_Distance = Vector3.Distance(Position, l_RayCastHit.point);
 
                         float l_DotAngle = Vector3.Dot(Normal, l_RayCastHit.normal);
                         if (!(l_Distance >= m_MinValidDistance && l_Distance <= m_MaxValidDistance && l_DotAngle > m_MinDotValidAngle))
                         {
-                            Debug.Log("4");
+                            
                             l_Valid = false;
                         }
                     }
