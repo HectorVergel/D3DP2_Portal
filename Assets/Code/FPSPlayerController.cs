@@ -292,6 +292,11 @@ public partial class FPSPlayerController : MonoBehaviour
             GameController.GetGameController().GetInterface().ChangeCrosshairState(CROSSHAIR_STATES.Orange);
 
         }
+        else if(!m_BluePortalActive && !m_OrangePortalActive)
+        {
+            GameController.GetGameController().GetInterface().ChangeCrosshairState(CROSSHAIR_STATES.Empty);
+
+        }
     }
 
     void UpdateDummyPortal(DummyPortal _DummyPortal, Portal _CurrentPortal)
