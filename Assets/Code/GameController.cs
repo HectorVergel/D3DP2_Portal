@@ -5,11 +5,13 @@ public class GameController : MonoBehaviour
 {
 
     FPSPlayerController m_Player;
+    Portal[] m_Portals;
     InterfaceManager m_Interface;
     public static GameController m_GameController = null;
     Turret[] m_Enemies;
     private void Start()
     {
+        SetPortals();
         SetAllEnemies();
         DontDestroyOnLoad(this.gameObject);
         Cursor.visible = false;
@@ -44,6 +46,11 @@ public class GameController : MonoBehaviour
         m_Player = _player;
     }
 
+    public void SetPortals()
+    {
+        m_Portals = FindObjectsOfType<Portal>();
+    }
+
 
     public void SetInterface(InterfaceManager _interfacePlayer)
     {
@@ -56,9 +63,10 @@ public class GameController : MonoBehaviour
     }
     public void RestartGame()
     {
+        
         m_Player.RestartGame();
         RestartEnemies();
-
+        ResetPortals();
 
     }
 
@@ -67,7 +75,13 @@ public class GameController : MonoBehaviour
         m_Enemies = FindObjectsOfType<Turret>();
     }
 
-
+    void ResetPortals()
+    {
+        foreach (var portal in m_Portals)
+        {
+            portal.ResetGame();
+        }
+    }
 
     void RestartEnemies()
     {

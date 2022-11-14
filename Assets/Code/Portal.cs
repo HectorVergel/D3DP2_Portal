@@ -126,11 +126,17 @@ public class Portal : MonoBehaviour
         Plane l_Plane = new Plane(transform.forward, transform.position);
         Ray l_Ray = new Ray(_LaserWorldPosition, _LaserWorldDirection);
         l_Plane.Raycast(l_Ray, out l_Distance);
-
-        m_MirrorPortal.m_Laser.transform.Translate(m_MirrorPortal.m_Laser.transform.forward * -l_Distance);
+        m_MirrorPortal.m_Laser.SetOffset(l_Distance);
         m_MirrorPortal.m_Laser.ShootLaser();
         
         
+    }
+
+
+    public void ResetGame()
+    {
+        gameObject.SetActive(false);
+        m_IsRefrecting = false;
     }
 
    

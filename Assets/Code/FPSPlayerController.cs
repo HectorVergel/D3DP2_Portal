@@ -93,6 +93,9 @@ public partial class FPSPlayerController : MonoBehaviour
     public Portal m_BluePortal;
     public Portal m_OrangePortal;
 
+    private bool m_BluePortalActive;
+    private bool m_OrangePortalActive;
+
     public DummyPortal m_DummyPortal;
     public float m_IncreasePortalSpeed = 10.0f;
     [Header("Animations")]
@@ -108,19 +111,19 @@ public partial class FPSPlayerController : MonoBehaviour
     public Transform m_CheckPoint;
 
     public float m_OffsetPortalTeleport;
+
+
     void Start()
     {
-        m_Yaw = transform.rotation.y;
-        m_Pitch = pitchController.localRotation.x;
-        m_FOV = m_NormalSpeedFOV;
-        //SetIdleWeaponAnimation();
-        GameController.GetGameController().SetPlayer(this);
-        m_StartRotation = transform.rotation;
-       
-
         m_BluePortal.gameObject.SetActive(false);
         m_OrangePortal.gameObject.SetActive(false);
         m_DummyPortal.gameObject.SetActive(false);
+        m_Yaw = transform.rotation.y;
+        m_Pitch = pitchController.localRotation.x;
+        m_FOV = m_NormalSpeedFOV;
+        GameController.GetGameController().SetPlayer(this);
+        m_StartRotation = transform.rotation;
+
     }
 
 #if UNITY_EDITOR
@@ -215,9 +218,18 @@ public partial class FPSPlayerController : MonoBehaviour
 
         if(!m_AttachedObject)
         {
-            if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
+            if (Input.GetMouseButton(0))
             {
-                UpdateDummyPortal(m_DummyPortal);
+                UpdateDummyPortal(m_DummyPortal, m_BluePortal);
+
+            }
+            else
+            {
+                m_DummyState = false;
+            }
+            if (Input.GetMouseButton(1))
+            {
+                UpdateDummyPortal(m_DummyPortal, m_OrangePortal);
 
             }
             else
@@ -230,6 +242,8 @@ public partial class FPSPlayerController : MonoBehaviour
                 m_DummyState = false;
                 
                 Shoot(m_BluePortal);
+                UpdateCrosshairState();
+                m_BluePortalActive = true;
                 m_DummyPortal.transform.localScale = Vector3.one;
             }
             if (Input.GetMouseButtonUp(1))
@@ -238,6 +252,8 @@ public partial class FPSPlayerController : MonoBehaviour
                 m_DummyState = false;
                
                 Shoot(m_OrangePortal);
+                UpdateCrosshairState();
+                m_OrangePortalActive = true;
                 m_DummyPortal.transform.localScale = Vector3.one;
             }
 
@@ -252,14 +268,42 @@ public partial class FPSPlayerController : MonoBehaviour
         {
             UpdateAttachObject();
         }
+        
+
 
     }
 
-    void UpdateDummyPortal(DummyPortal _DummyPortal)
+    public void UpdateCrosshairState()
+    {
+        m_BluePortalActive = m_BluePortal.gameObject.activeSelf;
+        m_OrangePortalActive = m_OrangePortal.gameObject.activeSelf;
+
+        if(m_BluePortalActive && m_OrangePortalActive)
+        {
+            GameController.GetGameController().GetInterface().ChangeCrosshairState(CROSSHAIR_STATES.Full);
+        }
+        else if (m_BluePortalActive)
+        {
+            GameController.GetGameController().GetInterface().ChangeCrosshairState(CROSSHAIR_STATES.Blue);
+
+        }
+        else if (m_OrangePortal)
+        {
+            GameController.GetGameController().GetInterface().ChangeCrosshairState(CROSSHAIR_STATES.Orange);
+
+        }
+        else if(!m_BluePortalActive && !m_OrangePortalActive)
+        {
+            GameController.GetGameController().GetInterface().ChangeCrosshairState(CROSSHAIR_STATES.Empty);
+
+        }
+    }
+
+    void UpdateDummyPortal(DummyPortal _DummyPortal, Portal _CurrentPortal)
     {
         Vector3 l_Position;
         Vector3 l_Normal;
-
+        
         Resizing();
 
         if (_DummyPortal.IsValidPosition(m_Camera.transform.position, m_Camera.transform.forward, m_MaxShootDistance, m_ShootingLayerMask, out l_Position, out l_Normal))
@@ -273,7 +317,8 @@ public partial class FPSPlayerController : MonoBehaviour
             _DummyPortal.IsValidPosition(m_Camera.transform.position, m_Camera.transform.forward, m_MaxShootDistance, m_ShootingLayerMask, out l_Position, out l_Normal);
 
         }
-
+        UpdateCrosshairState();
+        _CurrentPortal.gameObject.SetActive(false);
         m_DummyPortal.gameObject.SetActive(m_DummyState);
     }
 
