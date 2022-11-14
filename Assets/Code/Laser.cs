@@ -6,9 +6,11 @@ public class Laser : MonoBehaviour
     public LayerMask m_LaserLayerMask;
     public float m_MaxLaserDistance = 250.0f;
 
+    float m_Offset;
+
     public void ShootLaser()
     {
-        Ray l_Ray = new Ray(m_LaserRenderer.transform.position, m_LaserRenderer.transform.forward);
+        Ray l_Ray = new Ray(m_LaserRenderer.transform.position + (transform.forward * m_Offset), m_LaserRenderer.transform.forward);
 
         float l_LaserDistance = m_MaxLaserDistance;
         RaycastHit l_RayHit;
@@ -35,9 +37,14 @@ public class Laser : MonoBehaviour
             }
 
         }
+        m_LaserRenderer.SetPosition(0, new Vector3(0.0f, 0.0f, m_Offset));
         m_LaserRenderer.SetPosition(1, new Vector3(0.0f, 0.0f, l_LaserDistance));
     }
 
+    public void SetOffset(float _Offset)
+    {
+        m_Offset = _Offset;
+    }
    
 
 }

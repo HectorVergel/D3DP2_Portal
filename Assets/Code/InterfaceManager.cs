@@ -10,6 +10,13 @@ public class InterfaceManager : MonoBehaviour
     public GameObject m_ButtonRetry;
     [Header("Fade")]
     public float m_AlphaSpeed;
+
+    [Header("Crosshair")]
+    public Image m_CurrentCrosshair;
+    public Sprite m_CrosshairFull;
+    public Sprite m_CrosshairEmpty;
+    public Sprite m_CrosshairOrange;
+    public Sprite m_CrosshairBlue;
     private void Start()
     {
         GameController.GetGameController().SetInterface(this);
@@ -55,6 +62,36 @@ public class InterfaceManager : MonoBehaviour
         Cursor.visible = false;
         StartCoroutine(FadeOut());
     }
+
+
+    public void ChangeCrosshairState(CROSSHAIR_STATES _State)
+    {
+        switch (_State)
+        {
+            case CROSSHAIR_STATES.Empty:
+                m_CurrentCrosshair.sprite = m_CrosshairEmpty;
+                break;
+            case CROSSHAIR_STATES.Full:
+                m_CurrentCrosshair.sprite = m_CrosshairFull;
+                break;
+            case CROSSHAIR_STATES.Orange:
+                m_CurrentCrosshair.sprite = m_CrosshairOrange;
+                break;
+            case CROSSHAIR_STATES.Blue:
+                m_CurrentCrosshair.sprite = m_CrosshairBlue;
+                break;
+
+        }
+    }
+}
+
+
+public enum CROSSHAIR_STATES
+{
+    Empty,
+    Full,
+    Orange,
+    Blue
 }
 
 
