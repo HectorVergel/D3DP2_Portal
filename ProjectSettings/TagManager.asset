@@ -10,6 +10,7 @@ TagManager:
   - Companion
   - DummyPortal
   - RefractionCube
+  - PortalButton
   layers:
   - Default
   - TransparentFX

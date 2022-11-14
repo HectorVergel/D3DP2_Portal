@@ -2,16 +2,19 @@
 
 public class Laser : MonoBehaviour
 {
-    
-    public void ShootLaser(LineRenderer _Laser, LayerMask _Mask, float _Distance)
-    {
-        Ray l_Ray = new Ray(_Laser.transform.position, _Laser.transform.forward);
+    public LineRenderer m_LaserRenderer;
+    public LayerMask m_LaserLayerMask;
+    public float m_MaxLaserDistance = 250.0f;
 
-        float l_LaserDistance = _Distance;
+    public void ShootLaser()
+    {
+        Ray l_Ray = new Ray(m_LaserRenderer.transform.position, m_LaserRenderer.transform.forward);
+
+        float l_LaserDistance = m_MaxLaserDistance;
         RaycastHit l_RayHit;
-        if (Physics.Raycast(l_Ray, out l_RayHit, l_LaserDistance, _Mask.value))
+        if (Physics.Raycast(l_Ray, out l_RayHit, l_LaserDistance, m_LaserLayerMask.value))
         {
-            l_LaserDistance = Vector3.Distance(_Laser.transform.position, l_RayHit.point);
+            l_LaserDistance = Vector3.Distance(m_LaserRenderer.transform.position, l_RayHit.point);
 
             if (l_RayHit.collider.tag == "RefractionCube")
             {
@@ -19,13 +22,22 @@ public class Laser : MonoBehaviour
             }
             if(l_RayHit.collider.tag == "Portal")
             {
-                
-                l_RayHit.collider.GetComponent<Portal>().ShowLaser(l_RayHit.normal,l_RayHit.point, _Laser.transform.forward, true, _Distance);
+                if(l_RayHit.collider.GetComponent<Portal>() != null)
+                    l_RayHit.collider.GetComponent<Portal>().ShowLaser( l_RayHit.point, m_LaserRenderer.transform.forward, m_MaxLaserDistance);
             }
-           
+            if(l_RayHit.collider.tag == "Player")
+            {
+                l_RayHit.collider.GetComponent<FPSPlayerController>().OnDie();
+            }
+            if (l_RayHit.collider.tag == "Turret")
+            {
+                l_RayHit.collider.GetComponent<Turret>().OnDie();
+            }
+
         }
-        _Laser.SetPosition(1, new Vector3(0.0f, 0.0f, l_LaserDistance));
+        m_LaserRenderer.SetPosition(1, new Vector3(0.0f, 0.0f, l_LaserDistance));
     }
 
+   
 
 }

@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Turret : Laser
+public class Turret : MonoBehaviour
 {
-    public LineRenderer m_Laser;
-    public LayerMask m_LaserLayerMask;
+    public Laser m_Laser;
     public float m_AlifeAngleInDegrees = 30.0f;
 
-    public float m_MaxLaserDistance = 250.0f;
+    //public AudioClip m_DieAudio;
+    //public ParticleSystem m_DieParticles;
+
     void Update()
     {
         bool l_LaserAlife = Vector3.Dot(transform.up, Vector3.up) > Mathf.Cos(m_AlifeAngleInDegrees * Mathf.Deg2Rad);
@@ -17,10 +18,17 @@ public class Turret : Laser
 
         if (l_LaserAlife)
         {
-            ShootLaser(m_Laser, m_LaserLayerMask, m_MaxLaserDistance);
+            m_Laser.ShootLaser();
         }
 
 
+    }
+
+
+    public void OnDie()
+    {
+        //Añadir particula y sonido
+        Destroy(gameObject);
     }
 }
 

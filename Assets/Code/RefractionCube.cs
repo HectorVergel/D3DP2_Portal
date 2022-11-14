@@ -1,11 +1,8 @@
 ﻿using UnityEngine;
 
-public class RefractionCube : Laser
+public class RefractionCube : MonoBehaviour
 {
-    public LineRenderer m_Laser;
-    public LayerMask m_LaserLayerMask;
-    public float m_MaxLaserDistance = 250.0f;
-
+    public Laser m_Laser;
     bool m_RefractionEnabled;
 
 
@@ -19,7 +16,7 @@ public class RefractionCube : Laser
         if (m_RefractionEnabled)
             return;
 
-        ShootLaser(m_Laser,m_LaserLayerMask,m_MaxLaserDistance);
+        m_Laser.ShootLaser();
         m_RefractionEnabled = true;
     }
 }

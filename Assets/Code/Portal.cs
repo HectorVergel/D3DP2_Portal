@@ -9,7 +9,7 @@ public class Portal : MonoBehaviour
     public Camera m_Camera;
     public Transform m_OtherPortalTransform;
     public Portal m_MirrorPortal;
-    public LineRenderer m_Laser;
+    public Laser m_Laser;
     public FPSPlayerController m_Player;
     public float m_OffsetNearPlane;
 
@@ -19,9 +19,24 @@ public class Portal : MonoBehaviour
     public float m_MaxValidDistance = 1.2f;
     public float m_MinDotValidAngle = 0.995f;
 
+    private bool m_IsRefrecting;
+
     private void Start()
     {
         m_Laser.gameObject.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (m_IsRefrecting)
+        {
+            m_MirrorPortal.m_Laser.gameObject.SetActive(true);
+        }
+        else
+        {
+            m_MirrorPortal.m_Laser.gameObject.SetActive(false);
+        }
+        m_IsRefrecting = false;
     }
     public bool IsValidPosition(Vector3 StartPosition, Vector3 forward, float MaxDistance, LayerMask PortalLayerMask, out Vector3 Position, out Vector3 Normal)
     {
@@ -95,21 +110,26 @@ public class Portal : MonoBehaviour
 
     }
 
-    public void ShowLaser(Vector3 _Normal,Vector3 _LaserWorldPosition, Vector3 _LaserWorldDirection, bool _State, float _Distance)
+    public void ShowLaser( Vector3 _LaserWorldPosition, Vector3 _LaserWorldDirection, float _Distance)
     {
-        m_MirrorPortal.m_Laser.gameObject.SetActive(_State);
+       if(m_IsRefrecting) return;
+
+        m_IsRefrecting = true;
         Vector3 l_LocalPosition = m_OtherPortalTransform.InverseTransformPoint(_LaserWorldPosition);
         m_MirrorPortal.m_Laser.transform.position = m_MirrorPortal.transform.TransformPoint(l_LocalPosition);
 
         Vector3 l_LocalDirection = m_OtherPortalTransform.InverseTransformDirection(_LaserWorldDirection);
         m_MirrorPortal.m_Laser.transform.forward = m_MirrorPortal.transform.TransformDirection(l_LocalDirection);
 
-        m_MirrorPortal.m_Laser.SetPosition(1, new Vector3(0.0f, 0.0f, _Distance));
-
-        Plane l_Plane = new Plane(_Normal, _LaserWorldPosition);
-        Ray l_Ray = new Ray(_LaserWorldPosition, _LaserWorldDirection);
+        m_MirrorPortal.m_Laser.m_LaserRenderer.SetPosition(1, new Vector3(0.0f, 0.0f, _Distance));
         float l_Distance;
+        Plane l_Plane = new Plane(transform.forward, transform.position);
+        Ray l_Ray = new Ray(_LaserWorldPosition, _LaserWorldDirection);
         l_Plane.Raycast(l_Ray, out l_Distance);
+
+        m_MirrorPortal.m_Laser.transform.Translate(m_MirrorPortal.m_Laser.transform.forward * -l_Distance);
+        m_MirrorPortal.m_Laser.ShootLaser();
+        
         
     }
 

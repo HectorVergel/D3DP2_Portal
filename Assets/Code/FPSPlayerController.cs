@@ -104,8 +104,8 @@ public class FPSPlayerController : MonoBehaviour
 
     public bool m_HaveKey;
 
-    Vector3 m_StartPosition;
     Quaternion m_StartRotation;
+    public Transform m_CheckPoint;
 
     public float m_OffsetPortalTeleport;
     void Start()
@@ -116,7 +116,7 @@ public class FPSPlayerController : MonoBehaviour
         //SetIdleWeaponAnimation();
         //GameController.GetGameController().SetPlayer(this);
         m_StartRotation = transform.rotation;
-        m_StartPosition = transform.position;
+       
 
         m_BluePortal.gameObject.SetActive(false);
         m_OrangePortal.gameObject.SetActive(false);
@@ -212,7 +212,7 @@ public class FPSPlayerController : MonoBehaviour
         }
         else
         {
-            if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
+            if (Input.GetMouseButton(0) || Input.GetMouseButton(1) && !m_AttachedObject)
             {
                 UpdateDummyPortal(m_DummyPortal);
 
@@ -237,8 +237,6 @@ public class FPSPlayerController : MonoBehaviour
                 Shoot(m_OrangePortal);
                 m_DummyPortal.transform.localScale = Vector3.one;
             }
-
-
 
         }
 
@@ -352,7 +350,7 @@ public class FPSPlayerController : MonoBehaviour
     {
         if (m_ObjectAttached != null)
         {
-            StartCoroutine(ResetAttach());
+            m_AttachedObject = false;
             m_ObjectAttached.transform.SetParent(null);
             m_ObjectAttached.isKinematic = false;
             m_ObjectAttached.AddForce(pitchController.forward * _Force);
@@ -373,18 +371,7 @@ public class FPSPlayerController : MonoBehaviour
             _Portal.gameObject.SetActive(false);
     }
 
-    IEnumerator ResetAttach()
-    {
-        yield return new WaitForSeconds(0.5f);
-        m_AttachedObject = false;
-    }
-
-    void SetIdleWeaponAnimation()
-    {
-        m_MyAnimation.CrossFade(m_IdleAnimation.name);
-    }
-
-
+    
 
 
     void SetGravity()
@@ -451,8 +438,6 @@ public class FPSPlayerController : MonoBehaviour
     }
 
 
-
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Portal")
@@ -480,14 +465,17 @@ public class FPSPlayerController : MonoBehaviour
         m_CharacterController.enabled = true;
     }
 
-
+    public void OnDie()
+    {
+        RestartGame();
+    }
 
     public void RestartGame()
     {
 
         m_CharacterController.enabled = false;
+        transform.position = m_CheckPoint.position;
         transform.rotation = m_StartRotation;
-        //transform.position = GameController.GetGameController().GetLevel().GetLastCheckPoint().position;
         m_CharacterController.enabled = true;
     }
 
