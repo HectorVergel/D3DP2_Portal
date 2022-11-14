@@ -5,6 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - DrawableWall
+  - Portal
+  - Cube
+  - Companion
+  - DummyPortal
+  - RefractionCube
+  - PortalButton
   layers:
   - Default
   - TransparentFX
@@ -13,7 +19,7 @@ TagManager:
   - Water
   - UI
   - Wall
-  - 
+  - Companion
   - 
   - 
   - 
