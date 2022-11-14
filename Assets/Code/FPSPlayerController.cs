@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class FPSPlayerController : MonoBehaviour
+public partial class FPSPlayerController : MonoBehaviour
 {
 
     float m_Yaw;
@@ -114,7 +114,7 @@ public class FPSPlayerController : MonoBehaviour
         m_Pitch = pitchController.localRotation.x;
         m_FOV = m_NormalSpeedFOV;
         //SetIdleWeaponAnimation();
-        //GameController.GetGameController().SetPlayer(this);
+        GameController.GetGameController().SetPlayer(this);
         m_StartRotation = transform.rotation;
        
 
@@ -199,6 +199,7 @@ public class FPSPlayerController : MonoBehaviour
 
         CheckCollision(l_collisionFlags);
 
+       
         if (m_ObjectAttached != null && m_AttachedObject)
         {
             if (Input.GetMouseButtonDown(0))
@@ -210,9 +211,11 @@ public class FPSPlayerController : MonoBehaviour
                 ThrowAttachedObject(0);
             }
         }
-        else
+
+
+        if(!m_AttachedObject)
         {
-            if (Input.GetMouseButton(0) || Input.GetMouseButton(1) && !m_AttachedObject)
+            if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
             {
                 UpdateDummyPortal(m_DummyPortal);
 
@@ -221,7 +224,7 @@ public class FPSPlayerController : MonoBehaviour
             {
                 m_DummyState = false;
             }
-            if (Input.GetMouseButtonUp(0) && !m_AttachedObject)
+            if (Input.GetMouseButtonUp(0))
             {
                 m_ClickedButton = false;
                 m_DummyState = false;
@@ -229,7 +232,7 @@ public class FPSPlayerController : MonoBehaviour
                 Shoot(m_BluePortal);
                 m_DummyPortal.transform.localScale = Vector3.one;
             }
-            if (Input.GetMouseButtonUp(1) && !m_AttachedObject)
+            if (Input.GetMouseButtonUp(1))
             {
                 m_ClickedButton = false;
                 m_DummyState = false;
@@ -309,7 +312,7 @@ public class FPSPlayerController : MonoBehaviour
         RaycastHit l_RaycastHit;
         if (Physics.Raycast(l_Ray, out l_RaycastHit, m_MaxDistanceAttachObject, m_AttachMask.value))
         {
-            if (l_RaycastHit.collider.tag == "Companion")
+            if (l_RaycastHit.collider.GetComponent<Companion>() != null)
             {
                 m_AttachedObject = true;
                 m_ObjectAttached = l_RaycastHit.collider.GetComponent<Rigidbody>();
@@ -350,13 +353,21 @@ public class FPSPlayerController : MonoBehaviour
     {
         if (m_ObjectAttached != null)
         {
-            m_AttachedObject = false;
+           
             m_ObjectAttached.transform.SetParent(null);
             m_ObjectAttached.isKinematic = false;
             m_ObjectAttached.AddForce(pitchController.forward * _Force);
             m_ObjectAttached.GetComponent<Companion>().SetAttach(false);
             m_ObjectAttached = null;
+            StartCoroutine(SetAttachFalse());
+            
         }
+    }
+
+    IEnumerator SetAttachFalse()
+    {
+        yield return new WaitForSeconds(0.25f);
+        m_AttachedObject = false;
     }
 
     void Shoot(Portal _Portal)
@@ -467,7 +478,10 @@ public class FPSPlayerController : MonoBehaviour
 
     public void OnDie()
     {
-        RestartGame();
+        m_CharacterController.enabled = false;
+        m_AngleLocked = true;
+        GameController.GetGameController().GetInterface().SetDieInterface();
+        
     }
 
     public void RestartGame()
@@ -477,8 +491,8 @@ public class FPSPlayerController : MonoBehaviour
         transform.position = m_CheckPoint.position;
         transform.rotation = m_StartRotation;
         m_CharacterController.enabled = true;
+        m_AngleLocked = false;
     }
-
 }
 
 
