@@ -90,8 +90,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4055236338444526884}
-  - component: {fileID: 4055236338444402602}
   - component: {fileID: 4055236338444402603}
+  - component: {fileID: 1901721526}
   m_Layer: 0
   m_Name: portalbutton
   m_TagString: PortalButton
@@ -106,28 +106,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4055236338444302596}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3.934297, y: 0.0000009536743, z: -6.3081884}
-  m_LocalScale: {x: 0.008116158, y: 0.008116158, z: 0.008116158}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4055236338444526886}
   - {fileID: 4055236338444526880}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &4055236338444402602
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4055236338444302596}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 93.18034, y: 44.647926, z: 86.04426}
-  m_Center: {x: 3.938868, y: 20.138124, z: -3.8773553}
 --- !u!114 &4055236338444402603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -156,6 +143,19 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   m_Door: {fileID: 0}
+--- !u!65 &1901721526
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4055236338444302596}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.36883187, z: 1}
+  m_Center: {x: 0, y: 0.105226874, z: 0}
 --- !u!1 &4055236338444302598
 GameObject:
   m_ObjectHideFlags: 0
