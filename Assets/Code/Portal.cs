@@ -132,5 +132,12 @@ public class Portal : MonoBehaviour
         
     }
 
+
+    public void ResetGame()
+    {
+        gameObject.SetActive(false);
+        m_IsRefrecting = false;
+    }
+
    
 }

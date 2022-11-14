@@ -12,7 +12,7 @@ public class Turret : MonoBehaviour
 
     //public AudioClip m_DieAudio;
     public ParticleSystem m_DieParticles;
-
+    bool m_LaserAlife;
     private void Start()
     {
         m_StartPosition = transform.position;
@@ -20,11 +20,11 @@ public class Turret : MonoBehaviour
     }
     void Update()
     {
-        bool l_LaserAlife = Vector3.Dot(transform.up, Vector3.up) > Mathf.Cos(m_AlifeAngleInDegrees * Mathf.Deg2Rad);
+         m_LaserAlife = Vector3.Dot(transform.up, Vector3.up) > Mathf.Cos(m_AlifeAngleInDegrees * Mathf.Deg2Rad);
 
-        m_Laser.gameObject.SetActive(l_LaserAlife);
+        m_Laser.gameObject.SetActive(m_LaserAlife);
 
-        if (l_LaserAlife)
+        if (m_LaserAlife)
         {
             m_Laser.ShootLaser();
         }
@@ -43,6 +43,12 @@ public class Turret : MonoBehaviour
         ParticleSystem l_Particle = Instantiate(m_DieParticles, transform.position, Quaternion.identity);
         gameObject.SetActive(false);
         Destroy(l_Particle.gameObject, 0.45f);
+    }
+
+
+    public void DisableTurret()
+    {
+        m_LaserAlife = false;
     }
 
     

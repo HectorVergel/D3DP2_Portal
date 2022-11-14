@@ -34,6 +34,10 @@ public class Companion : MonoBehaviour
             }
            
         }
+        if(other.tag == "Turret")
+        {
+            other.GetComponent<Turret>().DisableTurret();
+        }
     }
 
     private void OnTriggerExit(Collider other)

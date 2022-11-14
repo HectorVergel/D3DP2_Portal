@@ -24,7 +24,7 @@ public class Laser : MonoBehaviour
             }
             if(l_RayHit.collider.tag == "Portal")
             {
-                if(l_RayHit.collider.GetComponent<Portal>() != null)
+                if(l_RayHit.collider.GetComponent<Portal>() != null && l_RayHit.collider.GetComponent<Portal>().m_MirrorPortal.gameObject.activeSelf)
                     l_RayHit.collider.GetComponent<Portal>().ShowLaser( l_RayHit.point, m_LaserRenderer.transform.forward, m_MaxLaserDistance);
             }
             if(l_RayHit.collider.tag == "Player")
