@@ -11,6 +11,7 @@ TagManager:
   - DummyPortal
   - RefractionCube
   - PortalButton
+  - Turret
   layers:
   - Default
   - TransparentFX
