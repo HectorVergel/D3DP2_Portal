@@ -14,11 +14,12 @@ public class PortalButton : MonoBehaviour
         {
             m_Action.Invoke();
         }
+        
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if(other.tag == "Companion")
+        if (other.tag == "Companion")
         {
             m_Door.OpenDoor();
         }

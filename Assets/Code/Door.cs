@@ -6,23 +6,30 @@ public class Door : MonoBehaviour
     public Animation m_MyAnimation;
     public AnimationClip m_OpenDoor;
     public AnimationClip m_CloseDoor;
-    bool m_Open = false;
+    public bool m_Open = false;
     public void OpenDoor()
     {
+
         if (!m_Open)
         {
-            m_Open = true;
+            Debug.Log("Open");
             m_MyAnimation.Play(m_OpenDoor.name);
+            m_Open = true;
+
         }
-        
+
+
     }
 
     public void CloseDoor()
     {
         if (m_Open)
         {
-            m_Open = true;
-            m_MyAnimation.Play(m_CloseDoor.name);
+            Debug.Log("Close");
+            m_MyAnimation.PlayQueued(m_CloseDoor.name);
+            m_Open = false;
+
         }
+
     }
 }

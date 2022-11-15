@@ -66,6 +66,7 @@ public class Companion : MonoBehaviour
         Vector3 l_WorldVelocityNormalized = l_WorldVelocity.normalized;
         transform.position = _Portal.m_MirrorPortal.transform.TransformPoint(l_LocalPosition) + l_WorldVelocityNormalized * m_OffsetPortalTeleport;
         transform.localScale *= (_Portal.m_MirrorPortal.transform.localScale.x / _Portal.transform.localScale.x);
+        transform.localScale = new Vector3(Mathf.Clamp(transform.localScale.x, 0.5f, 2.0f), Mathf.Clamp(transform.localScale.y, 0.5f, 2.0f), Mathf.Clamp(transform.localScale.z, 0.5f, 2.0f));
         m_Rigidbody.isKinematic = false;
         m_Rigidbody.velocity = l_WorldVelocity;
         m_ExitPortal = _Portal.m_MirrorPortal;
