@@ -35,6 +35,11 @@ public class Laser : MonoBehaviour
             {
                 l_RayHit.collider.GetComponent<Turret>().OnDie();
             }
+            if(l_RayHit.collider.tag == "Button")
+            {
+                if(l_RayHit.collider.GetComponent<PortalButton>().m_Door != null)
+                    l_RayHit.collider.GetComponent<PortalButton>().m_Door.OpenDoor();
+            }
 
         }
         m_LaserRenderer.SetPosition(0, new Vector3(0.0f, 0.0f, m_Offset));
