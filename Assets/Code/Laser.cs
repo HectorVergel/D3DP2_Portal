@@ -17,6 +17,7 @@ public class Laser : MonoBehaviour
         if (Physics.Raycast(l_Ray, out l_RayHit, l_LaserDistance, m_LaserLayerMask.value))
         {
             l_LaserDistance = Vector3.Distance(m_LaserRenderer.transform.position, l_RayHit.point);
+            Debug.Log(l_LaserDistance);
 
             if (l_RayHit.collider.tag == "RefractionCube")
             {
