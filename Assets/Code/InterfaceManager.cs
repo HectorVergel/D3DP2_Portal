@@ -39,7 +39,7 @@ public class InterfaceManager : MonoBehaviour
         }
         GameController.GetGameController().RestartGame();
         GameController.GetGameController().GetPlayer().m_CharacterController.enabled = false;
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(2f);
         m_ButtonRetry.SetActive(true);
     }
 

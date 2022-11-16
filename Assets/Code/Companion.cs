@@ -36,6 +36,7 @@ public class Companion : MonoBehaviour
         }
         if(other.tag == "Turret")
         {
+            Debug.Log("IN");
             other.GetComponent<Turret>().DisableTurret();
         }
     }

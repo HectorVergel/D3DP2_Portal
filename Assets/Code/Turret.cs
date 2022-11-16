@@ -20,14 +20,18 @@ public class Turret : MonoBehaviour
     }
     void Update()
     {
-         m_LaserAlife = Vector3.Dot(transform.up, Vector3.up) > Mathf.Cos(m_AlifeAngleInDegrees * Mathf.Deg2Rad);
-
-        m_Laser.gameObject.SetActive(m_LaserAlife);
-
-        if (m_LaserAlife)
+        if(m_Laser != null)
         {
-            m_Laser.ShootLaser();
+            m_LaserAlife = Vector3.Dot(transform.up, Vector3.up) > Mathf.Cos(m_AlifeAngleInDegrees * Mathf.Deg2Rad);
+
+            m_Laser.gameObject.SetActive(m_LaserAlife);
+
+            if (m_LaserAlife)
+            {
+                m_Laser.ShootLaser();
+            }
         }
+        
 
 
     }
@@ -48,9 +52,19 @@ public class Turret : MonoBehaviour
 
     public void DisableTurret()
     {
+        Debug.Log("DISABLE");
+        Destroy(m_Laser.gameObject);
         m_LaserAlife = false;
     }
 
-    
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "Turret")
+        {
+            DisableTurret();
+        }
+    }
+
 }
 

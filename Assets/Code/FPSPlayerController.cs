@@ -287,7 +287,7 @@ public partial class FPSPlayerController : MonoBehaviour
             GameController.GetGameController().GetInterface().ChangeCrosshairState(CROSSHAIR_STATES.Blue);
 
         }
-        else if (m_OrangePortal)
+        else if (m_OrangePortalActive)
         {
             GameController.GetGameController().GetInterface().ChangeCrosshairState(CROSSHAIR_STATES.Orange);
 
@@ -498,7 +498,7 @@ public partial class FPSPlayerController : MonoBehaviour
     {
         if (other.tag == "Portal")
         {
-            Portal l_Portal = other.GetComponent<Portal>();
+            Portal l_Portal = other.GetComponent<Portal>();   
             if (Vector3.Dot(l_Portal.transform.forward, -m_Direction) > Mathf.Cos(m_AngleToEnterPortalInDegrees) * Mathf.Deg2Rad)
                 Teleport(l_Portal);
         }
@@ -518,12 +518,13 @@ public partial class FPSPlayerController : MonoBehaviour
         transform.forward = _Portal.m_MirrorPortal.transform.TransformDirection(l_Direction);
         m_Yaw = transform.rotation.eulerAngles.y;
         transform.position = _Portal.m_MirrorPortal.transform.TransformPoint(l_LocalPosition) + l_WorldDirectionMovement * m_OffsetPortalTeleport;
+        transform.localScale *= (_Portal.m_MirrorPortal.transform.localScale.x / _Portal.transform.localScale.x);
+        transform.localScale = new Vector3(Mathf.Clamp(transform.localScale.x, 0.5f, 2.0f), Mathf.Clamp(transform.localScale.y, 0.5f, 2.0f), Mathf.Clamp(transform.localScale.z, 0.5f, 2.0f));
         m_CharacterController.enabled = true;
     }
 
     public void OnDie()
     {
-        m_CharacterController.enabled = false;
         m_AngleLocked = true;
         GameController.GetGameController().GetInterface().SetDieInterface();
         
@@ -537,6 +538,7 @@ public partial class FPSPlayerController : MonoBehaviour
         transform.rotation = m_StartRotation;
         m_CharacterController.enabled = true;
         m_AngleLocked = false;
+        Cursor.lockState = CursorLockMode.None;
     }
 }
 
